@@ -77,6 +77,9 @@ dbcli -c /path/to/datasources.json show-ddl -s mysql-test orders
 
 # run query
 dbcli -c /path/to/datasources.json query -s mysql-test --sql "select * from orders limit 5"
+
+# machine-readable json output
+dbcli -c /path/to/datasources.json -f json query -s mysql-test --sql "select * from orders limit 5"
 ```
 
 Recommended usage: call this CLI from a skill wrapper script (`run_dbcli.sh` or `run_dbcli.ps1`) so the agent can execute it consistently across environments.
