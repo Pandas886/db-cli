@@ -18,7 +18,7 @@ jobs:
             label: macos-arm64
             archive_name: dbcli-macos-arm64
             ext: tar.gz
-          - os: macos-13
+          - os: macos-15-intel
             label: macos-x64
             archive_name: dbcli-macos-x64
             ext: tar.gz
@@ -101,7 +101,7 @@ jobs:
           "%ROOT_DIR%\\runtime\\bin\\java.exe" -cp "%ROOT_DIR%\\app\\db-cli-0.1.0.jar;%ROOT_DIR%\\app\\lib\\*" com.example.dbcli.Main %*
           '@ | Set-Content -Encoding ascii "$pkgDir\\bin\\dbcli.cmd"
 
-          Compress-Archive -Path "$pkgDir\\*" -DestinationPath "target\\${{ matrix.archive_name }}.zip" -Force
+          Compress-Archive -Path "$pkgDir" -DestinationPath "target\\${{ matrix.archive_name }}.zip" -Force
         shell: pwsh
 
       - name: Upload artifact
