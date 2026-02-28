@@ -46,8 +46,15 @@ fi
 mkdir -p "$SKILL_DIR/assets"
 cp "$BINARY_ARCHIVE" "$SKILL_DIR/assets/$BUNDLE_FILE"
 
-perl -pi -e "s|__BUNDLE_FILE__|$BUNDLE_FILE|g; s|__EXTRACTED_DIR__|$ARCHIVE_ROOT_DIR|g; s|__BIN_REL_PATH__|$BIN_REL_PATH|g" \
-  "$SKILL_DIR/SKILL.md" "$SKILL_DIR/scripts/bootstrap_dbcli.sh"
+for target in "$SKILL_DIR/SKILL.md" "$SKILL_DIR/scripts/bootstrap_dbcli.sh"; do
+  tmp_file="$target.tmp"
+  sed \
+    -e "s|__BUNDLE_FILE__|$BUNDLE_FILE|g" \
+    -e "s|__EXTRACTED_DIR__|$ARCHIVE_ROOT_DIR|g" \
+    -e "s|__BIN_REL_PATH__|$BIN_REL_PATH|g" \
+    "$target" > "$tmp_file"
+  mv "$tmp_file" "$target"
+done
 
 chmod +x "$SKILL_DIR/scripts/bootstrap_dbcli.sh" "$SKILL_DIR/scripts/run_dbcli.sh"
 
