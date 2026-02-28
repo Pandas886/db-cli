@@ -59,10 +59,17 @@ done
 chmod +x "$SKILL_DIR/scripts/bootstrap_dbcli.sh" "$SKILL_DIR/scripts/run_dbcli.sh"
 
 mkdir -p "$(dirname "$OUTPUT_ZIP")"
-(
-  cd "$WORK_DIR"
-  rm -f "$OUTPUT_ZIP"
-  zip -r "$OUTPUT_ZIP" db-cli >/dev/null
-)
+rm -f "$OUTPUT_ZIP"
+if command -v zip >/dev/null 2>&1; then
+  (
+    cd "$WORK_DIR"
+    zip -r "$OUTPUT_ZIP" db-cli >/dev/null
+  )
+elif command -v powershell.exe >/dev/null 2>&1; then
+  powershell.exe -NoProfile -Command "Compress-Archive -Path '$WORK_DIR/db-cli' -DestinationPath '$OUTPUT_ZIP' -Force" >/dev/null
+else
+  echo "No archive tool available (zip or powershell.exe)" >&2
+  exit 1
+fi
 
 echo "Generated skill zip: $OUTPUT_ZIP"
