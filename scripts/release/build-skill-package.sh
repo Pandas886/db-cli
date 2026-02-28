@@ -66,7 +66,14 @@ if command -v zip >/dev/null 2>&1; then
     zip -r "$OUTPUT_ZIP" db-cli >/dev/null
   )
 elif command -v powershell.exe >/dev/null 2>&1; then
-  powershell.exe -NoProfile -Command "Compress-Archive -Path '$WORK_DIR/db-cli' -DestinationPath '$OUTPUT_ZIP' -Force" >/dev/null
+  if command -v cygpath >/dev/null 2>&1; then
+    ps_src="$(cygpath -w "$WORK_DIR/db-cli")"
+    ps_dst="$(cygpath -w "$OUTPUT_ZIP")"
+  else
+    ps_src="$WORK_DIR/db-cli"
+    ps_dst="$OUTPUT_ZIP"
+  fi
+  powershell.exe -NoProfile -Command "Compress-Archive -Path '$ps_src' -DestinationPath '$ps_dst' -Force" >/dev/null
 else
   echo "No archive tool available (zip or powershell.exe)" >&2
   exit 1
