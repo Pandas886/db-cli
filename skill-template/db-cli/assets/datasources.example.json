@@ -1,0 +1,24 @@
+{
+  "sources": [
+    {
+      "name": "mysql-demo",
+      "driverClass": "com.mysql.cj.jdbc.Driver",
+      "jdbcUrl": "jdbc:mysql://127.0.0.1:3306/demo_db?useSSL=false&allowPublicKeyRetrieval=true",
+      "username": "demo_user",
+      "password": "CHANGE_ME",
+      "database": "demo_db",
+      "schema": "",
+      "dialect": "mysql"
+    },
+    {
+      "name": "pg-demo",
+      "driverClass": "org.postgresql.Driver",
+      "jdbcUrl": "jdbc:postgresql://127.0.0.1:5432/demo_db",
+      "username": "demo_user",
+      "password": "CHANGE_ME",
+      "database": "demo_db",
+      "schema": "public",
+      "dialect": "postgresql"
+    }
+  ]
+}

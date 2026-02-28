@@ -1,0 +1,4 @@
+interface:
+  display_name: "DB CLI"
+  short_description: "Query multi-database sources via dbcli."
+  default_prompt: "Use $db-cli to list sources, inspect tables, and run SQL with a datasource config file."

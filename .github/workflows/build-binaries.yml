@@ -110,3 +110,19 @@ jobs:
           name: ${{ matrix.archive_name }}
           path: target/${{ matrix.archive_name }}.${{ matrix.ext }}
           if-no-files-found: error
+
+      - name: Build skill package
+        run: |
+          ./scripts/release/build-skill-package.sh \
+            "${{ matrix.label }}" \
+            "target/${{ matrix.archive_name }}.${{ matrix.ext }}" \
+            "${{ matrix.archive_name }}" \
+            "$(pwd)/target/db-cli-skill-${{ matrix.label }}.zip"
+        shell: bash
+
+      - name: Upload skill artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-cli-skill-${{ matrix.label }}
+          path: target/db-cli-skill-${{ matrix.label }}.zip
+          if-no-files-found: error

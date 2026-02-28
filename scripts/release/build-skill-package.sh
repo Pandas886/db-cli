@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ "$#" -ne 4 ]; then
+  echo "Usage: $0 <platform-label> <binary-archive-path> <archive-root-dir> <output-zip-path>" >&2
+  exit 1
+fi
+
+PLATFORM_LABEL="$1"
+BINARY_ARCHIVE="$2"
+ARCHIVE_ROOT_DIR="$3"
+OUTPUT_ZIP="$4"
+
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+TEMPLATE_DIR="$ROOT/skill-template/db-cli"
+WORK_DIR="$ROOT/target/skill-package/$PLATFORM_LABEL"
+SKILL_DIR="$WORK_DIR/db-cli"
+
+if [ ! -f "$BINARY_ARCHIVE" ]; then
+  echo "Binary archive not found: $BINARY_ARCHIVE" >&2
+  exit 1
+fi
+
+rm -rf "$WORK_DIR"
+mkdir -p "$SKILL_DIR"
+cp -R "$TEMPLATE_DIR"/* "$SKILL_DIR/"
+
+case "$BINARY_ARCHIVE" in
+  *.tar.gz)
+    BUNDLE_FILE="dbcli-bundle.tar.gz"
+    ;;
+  *.zip)
+    BUNDLE_FILE="dbcli-bundle.zip"
+    ;;
+  *)
+    echo "Unsupported binary archive extension: $BINARY_ARCHIVE" >&2
+    exit 1
+    ;;
+esac
+
+BIN_REL_PATH="$ARCHIVE_ROOT_DIR/bin/dbcli"
+if [[ "$PLATFORM_LABEL" == windows-* ]]; then
+  BIN_REL_PATH="$ARCHIVE_ROOT_DIR/bin/dbcli.cmd"
+fi
+
+mkdir -p "$SKILL_DIR/assets"
+cp "$BINARY_ARCHIVE" "$SKILL_DIR/assets/$BUNDLE_FILE"
+
+perl -pi -e "s|__BUNDLE_FILE__|$BUNDLE_FILE|g; s|__EXTRACTED_DIR__|$ARCHIVE_ROOT_DIR|g; s|__BIN_REL_PATH__|$BIN_REL_PATH|g" \
+  "$SKILL_DIR/SKILL.md" "$SKILL_DIR/scripts/bootstrap_dbcli.sh"
+
+chmod +x "$SKILL_DIR/scripts/bootstrap_dbcli.sh" "$SKILL_DIR/scripts/run_dbcli.sh"
+
+mkdir -p "$(dirname "$OUTPUT_ZIP")"
+(
+  cd "$WORK_DIR"
+  rm -f "$OUTPUT_ZIP"
+  zip -r "$OUTPUT_ZIP" db-cli >/dev/null
+)
+
+echo "Generated skill zip: $OUTPUT_ZIP"
