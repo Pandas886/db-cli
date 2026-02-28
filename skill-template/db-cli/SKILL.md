@@ -9,17 +9,32 @@ Use this skill to run `dbcli` commands from a datasource config JSON file.
 
 ## Quick Workflow
 
-1. Run `scripts/bootstrap_dbcli.sh` once to unpack bundled runtime.
+1. Run bootstrap once to unpack bundled runtime.
+: macOS/Linux: `scripts/bootstrap_dbcli.sh`
+: Windows PowerShell: `scripts/bootstrap_dbcli.ps1`
 2. Prepare datasource config JSON (see `assets/datasources.example.json`).
-3. Run `scripts/run_dbcli.sh` with command arguments.
+3. Run dbcli wrapper with command arguments.
+: macOS/Linux: `scripts/run_dbcli.sh ...`
+: Windows PowerShell: `scripts/run_dbcli.ps1 ...`
 
 ## Commands
+
+macOS/Linux:
 
 ```bash
 scripts/run_dbcli.sh list-sources --config /path/to/datasources.json
 scripts/run_dbcli.sh list-tables --config /path/to/datasources.json -s mysql-demo
 scripts/run_dbcli.sh show-ddl --config /path/to/datasources.json -s mysql-demo orders
 scripts/run_dbcli.sh query --config /path/to/datasources.json -s mysql-demo --sql "select * from orders limit 10"
+```
+
+Windows PowerShell:
+
+```powershell
+./scripts/run_dbcli.ps1 list-sources --config C:\path\to\datasources.json
+./scripts/run_dbcli.ps1 list-tables --config C:\path\to\datasources.json -s mysql-demo
+./scripts/run_dbcli.ps1 show-ddl --config C:\path\to\datasources.json -s mysql-demo orders
+./scripts/run_dbcli.ps1 query --config C:\path\to\datasources.json -s mysql-demo --sql "select * from orders limit 10"
 ```
 
 ## Bundled Binary

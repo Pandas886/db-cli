@@ -46,7 +46,7 @@ fi
 mkdir -p "$SKILL_DIR/assets"
 cp "$BINARY_ARCHIVE" "$SKILL_DIR/assets/$BUNDLE_FILE"
 
-for target in "$SKILL_DIR/SKILL.md" "$SKILL_DIR/scripts/bootstrap_dbcli.sh"; do
+for target in "$SKILL_DIR/SKILL.md" "$SKILL_DIR/scripts/bootstrap_dbcli.sh" "$SKILL_DIR/scripts/bootstrap_dbcli.ps1"; do
   tmp_file="$target.tmp"
   sed \
     -e "s|__BUNDLE_FILE__|$BUNDLE_FILE|g" \
