@@ -1,0 +1,93 @@
+# db-cli
+
+CLI for querying databases using datasource definitions from an external JSON file.
+
+## What this CLI does
+
+- Read datasource config from one JSON file managed by another system.
+- Resolve datasource by `name`.
+- List tables/views.
+- Show table DDL (native SQL when available, metadata fallback otherwise).
+- Run SQL and print result as text table.
+
+## Build
+
+Requirements:
+
+- JDK 21
+- Maven 3.9+
+
+```bash
+mvn -DskipTests package
+```
+
+Run from Maven build output:
+
+```bash
+java -cp "target/db-cli-0.1.0.jar:target/lib/*" com.example.dbcli.Main --help
+```
+
+## Config format
+
+See example: `examples/datasources.json`
+
+Top-level format:
+
+```json
+{
+  "sources": [
+    {
+      "name": "source-name",
+      "driverClass": "com.mysql.cj.jdbc.Driver",
+      "jdbcUrl": "jdbc:mysql://host:3306/db",
+      "username": "user",
+      "password": "pwd",
+      "database": "db",
+      "schema": "",
+      "dialect": "mysql"
+    }
+  ]
+}
+```
+
+Notes:
+
+- `name` and `jdbcUrl` are required.
+- Built-in JDBC drivers in package: MySQL, PostgreSQL, ClickHouse, SQLite, SQL Server, Snowflake.
+- For vendor/private drivers (e.g. DM, GBase, KingBase), put `*.jar` under project `drivers/` before packaging. Release scripts will copy them into `app/lib` automatically.
+- `dialect` supports: `mysql`, `postgresql`, `supabase`, `gbase8a`, `gbase8c`, `clickhouse`, `dm`, `sqlite`, `snowflake`, `sqlserver`, `doris`, `starrocks`, `kingbase`, `generic`.
+
+## Commands
+
+```bash
+# list datasource names
+dbcli -c /path/to/datasources.json list-sources
+
+# list tables
+dbcli -c /path/to/datasources.json list-tables -s mysql-test
+
+# show ddl
+dbcli -c /path/to/datasources.json show-ddl -s mysql-test orders
+
+# run query
+dbcli -c /path/to/datasources.json query -s mysql-test --sql "select * from orders limit 5"
+```
+
+## No-JDK packaging
+
+Build runtime image via `jlink`:
+
+```bash
+scripts/build-runtime.sh
+```
+
+Build app image via `jpackage`:
+
+```bash
+scripts/package-app.sh
+```
+
+Output:
+
+- runtime: `target/runtime`
+- app image: `target/dist/dbcli`

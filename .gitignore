@@ -1,0 +1,9 @@
+# Build outputs
+target/
+dist/
+
+# Local driver binaries
+drivers/*.jar
+
+# IDE / OS
+.DS_Store
