@@ -1,8 +1,14 @@
 # db-cli
 
-CLI for querying databases using datasource definitions from an external JSON file.
+Agent-first database CLI for AI skills. This tool is designed to be invoked by AI agents (for example Claude Code skills), not as a general-purpose human-first SQL client.
 
-## What this CLI does
+## Agent-First Purpose
+
+- Act as an execution backend for AI agent skills.
+- Provide stable commands and predictable outputs for agent tool-calling.
+- Query databases from externally managed datasource JSON configs.
+
+## What This CLI Does
 
 - Read datasource config from one JSON file managed by another system.
 - Resolve datasource by `name`.
@@ -57,7 +63,7 @@ Notes:
 - For vendor/private drivers (e.g. DM, GBase, KingBase), put `*.jar` under project `drivers/` before packaging. Release scripts will copy them into `app/lib` automatically.
 - `dialect` supports: `mysql`, `postgresql`, `supabase`, `gbase8a`, `gbase8c`, `clickhouse`, `dm`, `sqlite`, `snowflake`, `sqlserver`, `doris`, `starrocks`, `kingbase`, `generic`.
 
-## Commands
+## Commands (Agent Invocation)
 
 ```bash
 # list datasource names
@@ -72,6 +78,8 @@ dbcli -c /path/to/datasources.json show-ddl -s mysql-test orders
 # run query
 dbcli -c /path/to/datasources.json query -s mysql-test --sql "select * from orders limit 5"
 ```
+
+Recommended usage: call this CLI from a skill wrapper script (`run_dbcli.sh` or `run_dbcli.ps1`) so the agent can execute it consistently across environments.
 
 ## No-JDK packaging
 
