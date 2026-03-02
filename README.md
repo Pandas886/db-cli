@@ -75,6 +75,9 @@ dbcli -c /path/to/datasources.json list-tables -s mysql-test
 # show ddl
 dbcli -c /path/to/datasources.json show-ddl -s mysql-test orders
 
+# test connection
+dbcli -c /path/to/datasources.json test -s mysql-test
+
 # run query
 dbcli -c /path/to/datasources.json query -s mysql-test --sql "select * from orders limit 5"
 

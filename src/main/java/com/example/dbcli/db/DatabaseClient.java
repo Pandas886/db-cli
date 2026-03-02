@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,6 +18,19 @@ import java.util.List;
 import java.util.Set;
 
 public class DatabaseClient {
+    public boolean testConnection(DataSourceConfig source, int timeoutSeconds) throws SQLException, ClassNotFoundException {
+        try (Connection conn = open(source)) {
+            if (timeoutSeconds > 0) {
+                try {
+                    return conn.isValid(timeoutSeconds);
+                } catch (SQLFeatureNotSupportedException | AbstractMethodError ignored) {
+                    // Old/non-standard drivers may not support connection validation.
+                }
+            }
+            return !conn.isClosed();
+        }
+    }
+
     public List<String> listTables(DataSourceConfig source) throws SQLException, ClassNotFoundException {
         Dialect dialect = DialectFactory.forSource(source);
         List<String> dialectTables = listTablesFromDialectSql(source, dialect);

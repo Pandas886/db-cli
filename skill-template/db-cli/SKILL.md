@@ -59,6 +59,9 @@ scripts/run_dbcli.sh list-tables -s mysql-test
 # Show table DDL
 scripts/run_dbcli.sh show-ddl -s mysql-test my_table
 
+# Test datasource connection
+scripts/run_dbcli.sh test -s mysql-test
+
 # Execute SQL query
 scripts/run_dbcli.sh query -s mysql-test --sql "select * from my_table limit 10"
 ```
@@ -69,6 +72,7 @@ scripts/run_dbcli.sh query -s mysql-test --sql "select * from my_table limit 10"
 scripts/run_dbcli.sh list-sources --config assets/my-datasources.json
 scripts/run_dbcli.sh list-tables --config assets/my-datasources.json -s mysql-test
 scripts/run_dbcli.sh show-ddl --config assets/my-datasources.json -s mysql-test orders
+scripts/run_dbcli.sh test --config assets/my-datasources.json -s mysql-test
 scripts/run_dbcli.sh query --config assets/my-datasources.json -s mysql-test --sql "select * from orders limit 10"
 ```
 
@@ -79,12 +83,14 @@ Windows PowerShell:
 ./scripts/run_dbcli.ps1 list-sources
 ./scripts/run_dbcli.ps1 list-tables -s mysql-test
 ./scripts/run_dbcli.ps1 show-ddl -s mysql-test my_table
+./scripts/run_dbcli.ps1 test -s mysql-test
 ./scripts/run_dbcli.ps1 query -s mysql-test --sql "select * from my_table limit 10"
 
 # Using custom config path
 ./scripts/run_dbcli.ps1 list-sources --config assets/my-datasources.json
 ./scripts/run_dbcli.ps1 list-tables --config assets/my-datasources.json -s mysql-test
 ./scripts/run_dbcli.ps1 show-ddl --config assets/my-datasources.json -s mysql-test orders
+./scripts/run_dbcli.ps1 test --config assets/my-datasources.json -s mysql-test
 ./scripts/run_dbcli.ps1 query --config assets/my-datasources.json -s mysql-test --sql "select * from orders limit 10"
 ```
 

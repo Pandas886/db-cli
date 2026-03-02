@@ -27,7 +27,8 @@ import java.util.concurrent.Callable;
                 CliApp.ListSourcesCmd.class,
                 CliApp.ListTablesCmd.class,
                 CliApp.ShowDdlCmd.class,
-                CliApp.QueryCmd.class
+                CliApp.QueryCmd.class,
+                CliApp.TestCmd.class
         }
 )
 public class CliApp implements Runnable {
@@ -208,6 +209,49 @@ public class CliApp implements Runnable {
                 System.out.println("updateCount: " + result.updateCount());
             }
             return 0;
+        }
+    }
+
+    @Command(name = "test", description = "Test datasource connection")
+    static class TestCmd implements Callable<Integer> {
+        @CommandLine.ParentCommand
+        CliApp parent;
+
+        @Option(names = {"-s", "--source"}, required = true, description = "Datasource name")
+        String source;
+
+        @Option(names = {"-t", "--timeout"}, defaultValue = "5", description = "Connection validation timeout seconds")
+        int timeoutSeconds;
+
+        @Override
+        public Integer call() {
+            try {
+                Map<String, DataSourceConfig> sources = parent.loadSources();
+                DataSourceConfig ds = parent.sourceByName(sources, source);
+                boolean ok = parent.db.testConnection(ds, timeoutSeconds);
+
+                if (parent.isJsonOutput()) {
+                    Map<String, Object> payload = new LinkedHashMap<>();
+                    payload.put("source", source);
+                    payload.put("ok", ok);
+                    payload.put("error", ok ? null : "Connection validation failed");
+                    System.out.println(CliApp.toJson(payload));
+                } else {
+                    System.out.println(ok ? "OK" : "FAILED: Connection validation failed");
+                }
+                return ok ? 0 : 1;
+            } catch (Exception e) {
+                if (parent.isJsonOutput()) {
+                    Map<String, Object> payload = new LinkedHashMap<>();
+                    payload.put("source", source);
+                    payload.put("ok", false);
+                    payload.put("error", e.getMessage());
+                    System.out.println(CliApp.toJson(payload));
+                } else {
+                    System.out.println("FAILED: " + e.getMessage());
+                }
+                return 1;
+            }
         }
     }
 }
