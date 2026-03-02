@@ -131,8 +131,6 @@ public class DatabaseClient {
                 }
             }
             return toSortedList(names);
-        } catch (SQLException ignored) {
-            return List.of();
         }
     }
 

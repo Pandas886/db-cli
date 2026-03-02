@@ -91,14 +91,25 @@ public class CliApp implements Runnable {
         @Override
         public Integer call() {
             Map<String, DataSourceConfig> sources = parent.loadSources();
-            List<String> sorted = new ArrayList<>(new TreeSet<>(sources.keySet()));
+            List<String> sortedNames = new ArrayList<>(new TreeSet<>(sources.keySet()));
             if (parent.isJsonOutput()) {
+                List<Map<String, Object>> entries = new ArrayList<>();
+                for (String sourceName : sortedNames) {
+                    DataSourceConfig source = sources.get(sourceName);
+                    Map<String, Object> item = new LinkedHashMap<>();
+                    item.put("source", sourceName);
+                    item.put("dialect", source != null ? source.getDialect() : null);
+                    item.put("database", source != null ? source.getDatabase() : null);
+                    item.put("schema", source != null ? source.getSchema() : null);
+                    entries.add(item);
+                }
                 Map<String, Object> payload = new LinkedHashMap<>();
-                payload.put("sources", sorted);
-                payload.put("count", sorted.size());
+                payload.put("sources", entries);
+                payload.put("sourceNames", sortedNames);
+                payload.put("count", sortedNames.size());
                 System.out.println(CliApp.toJson(payload));
             } else {
-                sorted.forEach(System.out::println);
+                sortedNames.forEach(System.out::println);
             }
             return 0;
         }
