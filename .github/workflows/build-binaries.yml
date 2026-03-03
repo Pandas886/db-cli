@@ -110,6 +110,7 @@ jobs:
             --input $inputDir `
             --main-jar "db-cli-0.1.0.jar" `
             --main-class com.example.dbcli.Main `
+            --win-console `
             --runtime-image "target\\runtime"
 
           Copy-Item "$imageDir\\*" $pkgBinDir -Recurse
