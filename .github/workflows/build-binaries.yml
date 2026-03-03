@@ -95,9 +95,10 @@ jobs:
           $imageRoot = "target\\jpackage"
           $imageDir = "$imageRoot\\dbcli"
           $pkgDir = "target\\package\\${{ matrix.archive_name }}"
+          $pkgBinDir = "$pkgDir\\bin"
 
           Remove-Item -Recurse -Force $inputDir,$imageRoot,$pkgDir -ErrorAction SilentlyContinue
-          New-Item -ItemType Directory -Force -Path $inputDir,$pkgDir | Out-Null
+          New-Item -ItemType Directory -Force -Path $inputDir,$pkgBinDir | Out-Null
 
           Copy-Item "target\\db-cli-0.1.0.jar" "$inputDir\\"
           Copy-Item "target\\lib" "$inputDir\\lib" -Recurse
@@ -111,9 +112,17 @@ jobs:
             --main-class com.example.dbcli.Main `
             --runtime-image "target\\runtime"
 
-          Copy-Item "$imageDir\\*" $pkgDir -Recurse
+          Copy-Item "$imageDir\\*" $pkgBinDir -Recurse
           Copy-Item "README.md" "$pkgDir\\README.md"
           Copy-Item "examples\\datasources.json" "$pkgDir\\datasources.example.json"
+
+          if (!(Test-Path "$pkgBinDir\\dbcli.exe")) {
+            throw "Expected launcher not found: $pkgBinDir\\dbcli.exe"
+          }
+          & "$pkgBinDir\\dbcli.exe" query --help
+          if ($LASTEXITCODE -ne 0) {
+            throw "dbcli.exe sanity check failed with exit code $LASTEXITCODE"
+          }
 
           Compress-Archive -Path "$pkgDir" -DestinationPath "target\\${{ matrix.archive_name }}.zip" -Force
         shell: pwsh
