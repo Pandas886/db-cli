@@ -91,23 +91,29 @@ jobs:
       - name: Package binary (Windows)
         if: runner.os == 'Windows'
         run: |
+          $inputDir = "target\\package-input"
+          $imageRoot = "target\\jpackage"
+          $imageDir = "$imageRoot\\dbcli"
           $pkgDir = "target\\package\\${{ matrix.archive_name }}"
-          New-Item -ItemType Directory -Force -Path "$pkgDir\\bin" | Out-Null
-          New-Item -ItemType Directory -Force -Path "$pkgDir\\app" | Out-Null
 
-          Copy-Item "target\\db-cli-0.1.0.jar" "$pkgDir\\app\\"
-          Copy-Item "target\\lib" "$pkgDir\\app\\lib" -Recurse
-          Copy-Item "target\\runtime" "$pkgDir\\runtime" -Recurse
+          Remove-Item -Recurse -Force $inputDir,$imageRoot,$pkgDir -ErrorAction SilentlyContinue
+          New-Item -ItemType Directory -Force -Path $inputDir,$pkgDir | Out-Null
+
+          Copy-Item "target\\db-cli-0.1.0.jar" "$inputDir\\"
+          Copy-Item "target\\lib" "$inputDir\\lib" -Recurse
+
+          jpackage `
+            --type app-image `
+            --dest $imageRoot `
+            --name dbcli `
+            --input $inputDir `
+            --main-jar "db-cli-0.1.0.jar" `
+            --main-class com.example.dbcli.Main `
+            --runtime-image "target\\runtime"
+
+          Copy-Item "$imageDir\\*" $pkgDir -Recurse
           Copy-Item "README.md" "$pkgDir\\README.md"
           Copy-Item "examples\\datasources.json" "$pkgDir\\datasources.example.json"
-
-          @'
-          @echo off
-          setlocal
-          set SCRIPT_DIR=%~dp0
-          set ROOT_DIR=%SCRIPT_DIR%..
-          "%ROOT_DIR%\\runtime\\bin\\java.exe" -cp "%ROOT_DIR%\\app\\db-cli-0.1.0.jar;%ROOT_DIR%\\app\\lib\\*" com.example.dbcli.Main %*
-          '@ | Set-Content -Encoding ascii "$pkgDir\\bin\\dbcli.cmd"
 
           Compress-Archive -Path "$pkgDir" -DestinationPath "target\\${{ matrix.archive_name }}.zip" -Force
         shell: pwsh

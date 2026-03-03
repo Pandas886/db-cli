@@ -40,7 +40,7 @@ esac
 
 BIN_REL_PATH="$ARCHIVE_ROOT_DIR/bin/dbcli"
 if [[ "$PLATFORM_LABEL" == windows-* ]]; then
-  BIN_REL_PATH="$ARCHIVE_ROOT_DIR/bin/dbcli.cmd"
+  BIN_REL_PATH="$ARCHIVE_ROOT_DIR/dbcli.exe"
 fi
 
 mkdir -p "$SKILL_DIR/assets"
