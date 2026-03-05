@@ -59,9 +59,9 @@ Top-level format:
 Notes:
 
 - `name` and `jdbcUrl` are required.
-- Built-in JDBC drivers in package: MySQL, PostgreSQL, ClickHouse, SQLite, SQL Server, Snowflake.
+- Built-in JDBC drivers in package: MySQL, PostgreSQL, ClickHouse, SQLite, SQL Server, Snowflake, Oracle.
 - For vendor/private drivers (e.g. DM, GBase, KingBase), put `*.jar` under project `drivers/` before packaging. Release scripts will copy them into `app/lib` automatically.
-- `dialect` supports: `mysql`, `postgresql`, `supabase`, `gbase8a`, `gbase8c`, `clickhouse`, `dm`, `sqlite`, `snowflake`, `sqlserver`, `doris`, `starrocks`, `kingbase`, `generic`.
+- `dialect` supports: `mysql`, `postgresql`, `supabase`, `gbase8a`, `gbase8c`, `clickhouse`, `dm`, `sqlite`, `snowflake`, `sqlserver`, `oracle`, `doris`, `starrocks`, `kingbase`, `generic`.
 
 ## Commands (Agent Invocation)
 

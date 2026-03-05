@@ -20,6 +20,7 @@ public final class DialectFactory {
             case "sqlite", "sqlite3" -> new SqliteDialect();
             case "snowflake" -> new SnowflakeDialect();
             case "sqlserver", "mssql" -> new SqlServerDialect();
+            case "oracle", "oracledb" -> new OracleDialect();
             case "doris", "starrocks" -> new DorisLikeDialect();
             case "kingbase", "kingbase8", "kingbasees" -> new KingBaseDialect();
             default -> new GenericDialect();

@@ -1,6 +1,6 @@
 ---
 name: db-cli
-description: Query relational databases from a datasource JSON file using the bundled dbcli binary. Use when tasks require listing datasource names, listing tables, viewing table DDL, or executing SQL against MySQL, PostgreSQL, ClickHouse, SQLite, SQL Server, Snowflake, Doris, StarRocks, DM, GBase, or KingBase.
+description: Query relational databases from a datasource JSON file using the bundled dbcli binary. Use when tasks require listing datasource names, listing tables, viewing table DDL, or executing SQL against MySQL, PostgreSQL, ClickHouse, SQLite, SQL Server, Snowflake, Oracle, Doris, StarRocks, DM, GBase, or KingBase.
 ---
 
 # DB CLI Skill
